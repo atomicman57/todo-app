@@ -1,49 +1,37 @@
-import { Container } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import "./App.css";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { Box, Flex } from "@chakra-ui/react";
+import Header from "./components/Header";
+import TodoList from "./components/TodoList";
+import Footer from "./components/Footer";
+import React from "react";
+import { themeColors } from "./utils/helpers";
 
-type Task = {
-  id?: number;
-  name: string;
-  completed: boolean;
-};
+const queryClient = new QueryClient();
 
-function App() {
-  const [todos, setTodos] = useState<Task[]>([]);
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    const task: Task = {
-      name: e.target.name.value,
-      completed: false,
-    };
-    e.target.name.value = "";
-
-    // TODO: Write to the database and update the list of todos
-    console.log(task);
-  };
-
-  const getTasks = async () => {
-    return fetch("http://localhost:5000/tasks")
-      .then((res) => res.json())
-      .then((res) => res.tasks);
-  };
-
-  useEffect(() => {
-    getTasks().then(setTodos);
-  }, []);
-
+function App(): JSX.Element {
   return (
-    <Container>
-      <ul>
-        {todos.map((item: any) => (
-          <li key={item.id}>{item.name}</li>
-        ))}
-      </ul>
-      <form onSubmit={handleSubmit} method="post">
-        <input name="name" type="text" />
-        <input type="submit" value="Add an Item" />
-      </form>
-    </Container>
+    <QueryClientProvider client={queryClient}>
+      <Box
+        bg={themeColors.darkBg}
+        bgRepeat="no-repeat"
+        bgSize="contain"
+        display="flex"
+        justifyContent="center"
+        minHeight="100vh"
+      >
+        <Flex
+          direction="column"
+          w="90%"
+          maxW="540px"
+          mt={{ base: "40px", md: "80px" }}
+          mb="60px"
+        >
+          <Header />
+          <TodoList />
+          <Footer />
+        </Flex>
+      </Box>
+    </QueryClientProvider>
   );
 }
 
